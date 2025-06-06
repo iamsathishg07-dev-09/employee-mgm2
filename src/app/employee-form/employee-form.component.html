@@ -1,0 +1,236 @@
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+  <div class="p-4 shadow rounded form-container">
+    <form (ngSubmit)="mode === 'edit' ? updateEmployee() : saveEmployee()" #employeeForm="ngForm">
+      <h1 class="mb-4 text-center">EMPLOYEE FORM</h1>
+
+      <div class="mb-3 row">
+        <label for="name" class="col-sm-4 col-form-label">Name <span style="color: red;">*</span></label>
+        <div class="col-sm-8">                                                                                          <!--name control also a reference variable contails properties for specific field (name field)-->
+          <input type="text" id="name" [(ngModel)]="employee.name" name="name" [disabled]="mode==='view'" class="form-control" required minlength="3" (input)="filterTextInput($event)" #nameCtrl="ngModel"/>
+          <div *ngIf="nameCtrl.invalid && (nameCtrl.dirty || nameCtrl.touched)" class="text-danger">
+            <small *ngIf="nameCtrl.errors?.['required']">Name is required</small><!--here ?. is safe navigation operator prevents if erros?. is null-->
+            <small *ngIf="nameCtrl.errors?.['minlength']">Minimum 3 characters required</small>
+          </div>
+        </div>
+      </div>  
+
+      <div class="mb-3 row">
+        <label for="email" class="col-sm-4 col-form-label">Email <span style="color: red;">*</span></label>
+        <div class="col-sm-8">                                                                                          <!--name control also a reference variable contails properties for specific field (name field)-->
+          <input type="email" id="email" [(ngModel)]="employee.email" name="email" [disabled]="mode==='view'" class="form-control" required pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$" #emailCtrl="ngModel"/>
+          <div *ngIf="emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched)" class="text-danger">
+            <small *ngIf="emailCtrl.errors?.['required']">Email is required</small>
+            <small *ngIf="emailCtrl.errors?.['minlength']">Minimum 3 characters required</small>
+            <small *ngIf="emailCtrl.errors?.['pattern']">Please enter a valid email address</small>
+          </div>
+        </div>
+      </div>
+      <div class="mb-3 row">
+        <label for="dob" class="col-sm-4 col-form-label">Date of Birth <span style="color: red;">*</span></label>
+        <div class="col-sm-8"> 
+          <input type="date" id="dob" [(ngModel)]="employee.dob" name="dob"  [max]="today" [disabled]="mode==='view'" class="form-control" required #dobCtrl="ngModel"/>
+          <div *ngIf="dobCtrl.invalid && (dobCtrl.dirty || dobCtrl.touched)" class="text-danger">
+            <small *ngIf="dobCtrl.errors?.['required']">Date of Birth is required</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3 row">
+        <label class="col-sm-4 col-form-label">Gender <span style="color: red;">*</span></label>
+        <div class="col-sm-8">
+          <div class="form-check form-check-inline">
+            <input type="radio" id="genderMale" [(ngModel)]="employee.gender" name="gender" value="Male" [disabled]="mode==='view'" class="form-check-input" />
+            <label class="form-check-label" for="genderMale">Male</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input type="radio" id="genderFemale" [(ngModel)]="employee.gender" name="gender" value="Female" [disabled]="mode==='view'" class="form-check-input" />
+            <label class="form-check-label" for="genderFemale">Female</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3 row">
+        <label for="department" class="col-sm-4 col-form-label">Department <span style="color: red;">*</span></label>
+        <div class="col-sm-8">
+          <select id="department" [(ngModel)]="employee.department" name="department" [disabled]="mode==='view'" class="form-select" required #departmentCtrl="ngModel">
+            <option value="" disabled selected>Select a Department</option> <option value="IT">IT</option>
+            <option value="HR">HR</option>
+            <option value="Finance">Finance</option>
+            <option value="Marketing">Marketing</option>
+          </select>
+          <div *ngIf="departmentCtrl.invalid && departmentCtrl.touched" class="text-danger">
+            <small *ngIf="departmentCtrl.errors?.['required']">Department is required</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3 row">
+        <label for="skills" class="col-sm-4 col-form-label">Skills <span style="color: red;">*</span></label>
+        <div class="col-sm-8">
+          <input type="text" id="skills" [(ngModel)]="employee.skills" name="skills" [disabled]="mode==='view'" class="form-control" required #skillsCtrl="ngModel"/>
+          <div *ngIf="skillsCtrl.invalid && (skillsCtrl.dirty || skillsCtrl.touched)" class="text-danger">
+            <small *ngIf="skillsCtrl.errors?.['required']">Skills are required</small>
+            </div>
+        </div>
+      </div>
+      <div class="mb-3 row">
+        <label class="col-sm-4 col-form-label">Do you have Added your account? <span style="color: red;">*</span></label>
+        <div class="col-sm-8">
+          <div class="form-check form-check-inline">
+            <input type="radio" id="hasAccountYes" [(ngModel)]="hasAccount" [value]="true" name="hasAccountOption"
+              [disabled]="mode==='view'" [disabled]="mode==='view'" (change)="onAccountOptionChange()" class="form-check-input" />
+            <label class="form-check-label" for="hasAccountYes">Yes</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input type="radio" id="hasAccountNo" [(ngModel)]="hasAccount" [value]="false" name="hasAccountOption"
+              [disabled]="mode==='view'" [disabled]="mode==='edit'"  (change)="onAccountOptionChange()" class="form-check-input" />
+            <label class="form-check-label" for="hasAccountNo">No</label>
+          </div>
+        </div>
+      </div>
+      <hr>
+      <div *ngIf="hasAccount && mode != 'view'" class="mb-3 row align-items-center">
+        <label for="accountId" class="col-sm-4 col-form-label">Find Your Account By Mobile <span style="color: red;">*</span></label>
+        <div class="col-sm-8 d-flex">
+          <input type="text" id="Mobile" [(ngModel)]="employee.account.mobileNumber" name="account.mobileNumber" [disabled]="mode==='view'" required (input)="filterNumericInput($event)"  pattern="[0-9]{10}" minlength="10" maxlength="10" class="form-control flex-grow-1" #accountCtrl="ngModel" />
+          <div *ngIf="accountCtrl.invalid && accountCtrl.touched" class="text-danger"></div>
+          <button type="button" (click)="openAccountModal()" class="btn btn-primary ms-2" [disabled]="mode==='view'">Search</button>
+        </div>
+      </div>
+      <div *ngIf="hasAccount && mode === 'view'" class="mb-3 row">
+      <label class="col-sm-4 col-form-label">Account Mobile Number:</label>
+      <div class="col-sm-8">
+      <input type="text" [value]="employee.account.mobileNumber" class="form-control" disabled />
+      </div>
+      </div>
+      <div *ngIf="!hasAccount">
+        <h5 class="mt-4 mb-3">Enter Your Account Details</h5>
+        <div class="mb-3 row">
+          <label for="newAccountNumber" class="col-sm-4 col-form-label">Account Number <span style="color: red;">*</span></label>
+          <div class="col-sm-8">
+            <input type="text" id="newAccountNumber" [(ngModel)]="newAccountDetails.accountNumber"
+              name="newAccountNumber" [disabled]="mode==='view'" class="form-control" [required]="!hasAccount"
+              (input)="filterNumericInput($event)"
+              #newAccountNumberCtrl="ngModel" />
+            <div *ngIf="newAccountNumberCtrl.invalid && (newAccountNumberCtrl.dirty || newAccountNumberCtrl.touched)"
+              class="text-danger">
+              <small *ngIf="newAccountNumberCtrl.errors?.['required']">Account number is required</small>
+            </div>
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="newAccountNumber" class="col-sm-4 col-form-label">Mobile Number <span style="color: red;">*</span></label>
+          <div class="col-sm-8">
+            <input type="tel" id="newMobileNumber" [(ngModel)]="newAccountDetails.mobileNumber"
+              name="newMobileNumber" [disabled]="mode==='view'" class="form-control" [required]="!hasAccount"
+              (input)="filterNumericInput($event)"  pattern="[0-9]{10}" minlength="10" maxlength="10"
+              #newMobileNumberCtrl="ngModel" />
+            <div *ngIf="newMobileNumberCtrl.invalid && (newMobileNumberCtrl.dirty || newMobileNumberCtrl.touched)"
+              class="text-danger">
+              <small *ngIf="newMobileNumberCtrl.errors?.['required']">Mobile number is required</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3 row">
+          <label for="newBankName" class="col-sm-4 col-form-label">Bank Name <span style="color: red;">*</span></label>
+          <div class="col-sm-8">
+            <input type="text" id="newBankName" [(ngModel)]="newAccountDetails.bankName" name="newBankName"
+              [disabled]="mode==='view'" class="form-control" [required]="!hasAccount"(input)="filterTextInput($event)" #newBankNameCtrl="ngModel" />
+            <div *ngIf="newBankNameCtrl.invalid && (newBankNameCtrl.dirty || newBankNameCtrl.touched)"
+              class="text-danger">
+              <small *ngIf="newBankNameCtrl.errors?.['required']">Bank name is required</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3 row">
+          <label for="newIfscCode" class="col-sm-4 col-form-label">IFSC <span style="color: red;">*</span></label>
+          <div class="col-sm-8">
+            <input type="text" id="newIfscCode" [(ngModel)]="newAccountDetails.ifscCode" name="newIfscCode"
+              [disabled]="mode==='view'" class="form-control" [required]="!hasAccount" #newIfscCodeCtrl="ngModel" />
+            <div *ngIf="newIfscCodeCtrl.invalid && (newIfscCodeCtrl.dirty || newIfscCodeCtrl.touched)"
+              class="text-danger">
+              <small *ngIf="newIfscCodeCtrl.errors?.['required']">IFSC code is required</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3 row">
+          <label for="newBranchAddress" class="col-sm-4 col-form-label">Branch Address <span style="color: red;">*</span></label>
+          <div class="col-sm-8">
+            <input type="text" id="newBranchAddress" [(ngModel)]="newAccountDetails.branchAddress"
+              name="newBranchAddress" [disabled]="mode==='view'" class="form-control" [required]="!hasAccount"
+              #newBranchAddressCtrl="ngModel" />
+            <div *ngIf="newBranchAddressCtrl.invalid && (newBranchAddressCtrl.dirty || newBranchAddressCtrl.touched)"
+              class="text-danger">
+              <small *ngIf="newBranchAddressCtrl.errors?.['required']">Branch address is required</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+     
+      <div *ngIf="selectedAccount">
+        <h5 class="mt-4 mb-3">Account Details:</h5>
+        <div class="mb-3 row">
+          <label class="col-sm-4 col-form-label">Account Number <span style="color: red;">*</span></label>
+          <div class="col-sm-8">
+            <input type="text" [value]="selectedAccount.accountNumber" disabled class="form-control" />
+          </div>
+        </div>
+      
+        <div class="mb-3 row">
+          <label class="col-sm-4 col-form-label">Bank Name <span style="color: red;">*</span></label>
+          <div class="col-sm-8">
+            <input type="text" [value]="selectedAccount.bankName" disabled class="form-control" />
+          </div>
+        </div>
+
+        <div class="mb-3 row">
+          <label class="col-sm-4 col-form-label">IFSC <span style="color: red;">*</span></label>
+          <div class="col-sm-8">
+            <input type="text" [value]="selectedAccount.ifscCode" disabled class="form-control" />
+          </div>
+        </div>
+
+        <div class="mb-3 row">
+          <label class="col-sm-4 col-form-label">Branch Address <span style="color: red;">*</span></label>
+          <div class="col-sm-8">
+            <input type="text" [value]="selectedAccount.branchAddress" disabled class="form-control" />
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center mt-4">
+        <button type="submit" class="btn btn-success px-4" *ngIf="mode !== 'view'" [disabled]="employeeForm.invalid">
+          {{ mode === 'edit' ? 'Update' : 'Save' }}
+        </button>
+        <button type="button" class="btn btn-secondary px-4 ms-2" [routerLink]="['/employee-list']">
+          Back
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <app-account-list *ngIf="showModal" [accountId]="employee.account.mobileNumber" (accountSelected)="onAccountSelected($event)">
+  </app-account-list>
+<app-message
+  [message]="message"
+  (closed)="message = null">
+</app-message>      <!--used for show the message model in the view-->
+</div>
+
+
+<style>
+ .form-container {
+  max-width: 1500px; /* Example: A very wide max-width for forms */
+  width: 95%; /* Take up 95% of available width up to max-width */
+}
+h1 {
+  background-color: #e8e8e5; 
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+</style>
