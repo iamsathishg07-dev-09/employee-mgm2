@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class AccountService {
+  
 private baseUrl = 'http://localhost:8080/EmployeeRestApi/api/accounts/';
 
   constructor(private http: HttpClient) { }
@@ -17,6 +18,10 @@ private baseUrl = 'http://localhost:8080/EmployeeRestApi/api/accounts/';
    deleteByMobileNumber(mobileNumber: any): Observable<any> {
     const deleteUrl = `${this.baseUrl}mobile/${mobileNumber}`;
     return this.http.delete(deleteUrl);
+  }
+  getAccountByMobileNumber(mobileNumber: any):Observable<any> {
+    const getActUrl=`${this.baseUrl}mobile/${mobileNumber}`;
+    return this.http.get(getActUrl);
   }
 
 }

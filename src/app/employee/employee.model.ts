@@ -1,5 +1,6 @@
   export interface Employee {
-    eid: number;
+    account: any;
+    id:number
     name: string;
     dob: string;
     email:string;
@@ -7,6 +8,7 @@
     gender: string;
     department: string;
     skills: string;
-    id:number
+    doj:string;
+    [key: string]: any;
   }
   

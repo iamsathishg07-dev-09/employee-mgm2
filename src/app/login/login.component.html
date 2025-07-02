@@ -23,7 +23,7 @@
         <label for="password" class="mb-2 fw-semibold">Password</label>
         <input
           type="password"
-          placeholder="**********"
+          placeholder="*********"
           class="form-control px-2 py-1"
           [ngClass]="{'is-invalid': passwordInput.invalid && (passwordInput.dirty || passwordInput.touched), 'is-valid': passwordInput.valid && (passwordInput.dirty || passwordInput.touched)}"
           id="password"
@@ -31,7 +31,7 @@
           [(ngModel)]="loginData.password"
           required
           minlength="6"
-          maxlength="255"
+          maxlength="24"
           #passwordInput="ngModel"
         >
       </div>

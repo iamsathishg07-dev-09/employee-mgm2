@@ -15,14 +15,16 @@ import { MessageComponent } from '../message/message.component';
 export class LoginComponent {
   loginData: User = { username: '', password: '' };
   message: string | null = null; 
+  private readonly USER_KEY = 'loggedInUsername'; //for storing username in session storage
 
 
-  constructor(private userService: UserService, private router: Router) { }
-
+constructor(private userService: UserService, private router: Router) { }
+  
  loginUser(): void {
   this.userService.loginUserService(this.loginData).subscribe({
        next: () => {
         this.showSuccess("Login Success !!")
+         sessionStorage.setItem(this.USER_KEY,this.loginData.username)
          setTimeout(() => {
         this.router.navigate(['/employee-list']);
         }, 3000);
@@ -32,6 +34,7 @@ export class LoginComponent {
      }
   });
 }
+
 showSuccess(msg: string) {
   this.message = msg;
 }
@@ -41,6 +44,6 @@ showError(error: any) {
     this.message = "Invalid username or password"; 
   }
   else {
-      this.message = "An unexpected error occurred. Please try again.";
+      this.message = "Server down! try after some time!!";
   }}
 }

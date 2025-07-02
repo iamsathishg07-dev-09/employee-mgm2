@@ -24,6 +24,9 @@ export class EmployeeFormComponent implements OnInit {
   //below is for model view of success and error messages
   message:string | null=null;
 
+  private readonly USER_KEY = 'loggedInUsername';
+  loggedInUsername:string | null=null;
+
   //view of account details for who don't added accounts
   newAccountDetails = {
     mobileNumber:'',
@@ -42,17 +45,24 @@ export class EmployeeFormComponent implements OnInit {
     gender: 'Male',
     department: 'IT',
     skills: '',
+    doj:'',
     account: {
       mobileNumber:'',
     }
   };
 
   constructor(private employeeService: EmployeeService,
-     private accountService:AccountService,
-     private route: ActivatedRoute,  //angular uses dependency injection by declaring in constructor it will automatically inject the instance
+     private accountService:AccountService, //angular uses dependency injection by declaring in constructor it will automatically inject the instance
+     private route: ActivatedRoute,  //will get & hold the route parameters from the active route page
      private router: Router) {}  //router for navigation & route for getting route parameters from route url
 
   ngOnInit(): void {
+
+  if(!sessionStorage.getItem(this.USER_KEY))
+    {
+    this.router.navigate(['/login']);    
+    }
+  this.loggedInUsername=sessionStorage.getItem(this.USER_KEY);
   const now = new Date();
   this.today = now.toISOString().split('T')[0];
  
@@ -204,6 +214,11 @@ onAccountOptionChange(): void {
       this.employee.account.mobileNumber = '';
       this.selectedAccount = null;
     }
+  }
+  goToLoginPage()
+  {
+     console.log('Logging out (placeholder action)');
+    this.router.navigate(['/login']);
   }
 
 

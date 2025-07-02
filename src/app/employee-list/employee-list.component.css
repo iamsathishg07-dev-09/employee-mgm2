@@ -1,0 +1,31 @@
+.search-container {
+    width: 300px;
+}
+div.dropdown:hover > ul.dropdown-menu {
+  display: block; 
+}
+
+ul.dropdown-menu {
+  display: none;
+}
+
+.header-with-divider {
+  border-right: 1px solid #dee2e6; /* Thin, light grey vertical line */
+  padding-right: 1rem; /* Space between the text and the vertical line */
+  margin-right: 1rem;  /* Space between the vertical line and the next element */
+  
+  /* To ensure icons and text align nicely within the h1 alongside the border */
+  display: flex;
+  align-items: center;
+  white-space: nowrap; /* Prevent "Employee List" from wrapping */
+}
+.header-ash-gradient {
+  /* Linear gradient from a slightly darker ash to a lighter ash */
+  background: linear-gradient(to bottom, #000000, #373636); 
+  /* Fallback color for browsers that don't support gradients */
+  background-color: #e8e8e5; 
+}
+
+.glow-hover:hover {
+filter: drop-shadow(0 0 6px cyan);
+}

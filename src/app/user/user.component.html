@@ -17,7 +17,7 @@
           maxlength="50"
           #usernameInput="ngModel"
         >
-        <div *ngIf="usernameInput.invalid && (usernameInput.dirty || usernameInput.touched)" class="invalid-feedback">
+        <div *ngIf="usernameInput.invalid && (usernameInput.dirty || usernameInput.touched)" class="invalid-feedback" >
           <div *ngIf="usernameInput.errors?.['required']">
             Username is required.
           </div>
@@ -42,7 +42,7 @@
           [(ngModel)]="newUser.password"
           required
           minlength="6"
-          maxlength="255"
+          maxlength="24"
           #passwordInput="ngModel"
         >
         <div *ngIf="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)" class="invalid-feedback">
@@ -53,7 +53,7 @@
             Password must be at least 6 characters long.
           </div>
           <div *ngIf="passwordInput.errors?.['maxlength']">
-            Password cannot exceed 255 characters.
+            Password cannot exceed 24 characters.
           </div>
         </div>
       </div>

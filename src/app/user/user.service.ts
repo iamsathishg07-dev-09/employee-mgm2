@@ -12,12 +12,13 @@ export class UserService {
 
   constructor(private httpClient:HttpClient) { }
 
-  createUserService(newUser:User):Observable<User>
+  createUserService(newUser:User):Observable<any>
   {
       return this.httpClient.post<User>(this.apiUrl_register,newUser)
   }
-  loginUserService(newUser:User): Observable<any> {
+  loginUserService(newUser:User): Observable<User> {
 
-    return this.httpClient.post(this.apiUrl_login,newUser);
+    return this.httpClient.post<User>(this.apiUrl_login,newUser);
   }
+ 
 }

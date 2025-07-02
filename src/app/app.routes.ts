@@ -5,7 +5,7 @@ import { LoginComponent } from './login/login.component';
 import { UserComponent } from './user/user.component';
 
 export const appRoutes: Routes = [
-  {path: '', component:LoginComponent},
+  {path:'',redirectTo:"/login",pathMatch:'full'},
   {path:'register',component:UserComponent},
   {path:'login',component:LoginComponent},
   { path: 'employee-list', component: EmployeeListComponent },

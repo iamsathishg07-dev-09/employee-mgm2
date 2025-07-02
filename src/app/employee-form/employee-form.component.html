@@ -1,8 +1,23 @@
-<div class="container d-flex justify-content-center align-items-center min-vh-100">
+<div class="d-flex justify-content-between align-items-center py-3 px-4 header-ash-gradient border-bottom position-sticky top-0 " style="z-index: 1020;">
+<div class="d-flex align-items-center">
+        <div class="mb-0 text-white fw-bold text-dark header-with-divider">
+            <i class="bi bi-people me-1 text-primary"></i>EMPLOYEE MANAGEMENT
+        </div>
+        <p class="mb-0 text-center text-white ms-3">EMPLOYEE FORM</p> </div>  
+
+    <div class="dropdown">
+        <a class="nav-link dropdown-toggle d-flex align-items-center text-white" href="javascript:void(0)" id="navbarDropdownUser" role="button" aria-expanded="false">
+            <i class="bi bi-person-circle me-2 fs-4 text-primary"></i>
+            <span class="fw-bold text-white">{{loggedInUsername | uppercase}}</span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end " aria-labelledby="navbarDropdownUser">
+            <li><a class="dropdown-item text-primary" href="javascript:void(0)" (click)="goToLoginPage()"><i class="bi bi-box-arrow-right me-2 text-primary"></i>Logout</a></li>
+        </ul>
+    </div>
+</div>
+<div class="container-fluid content-wrapper">
   <div class="p-4 shadow rounded form-container">
     <form (ngSubmit)="mode === 'edit' ? updateEmployee() : saveEmployee()" #employeeForm="ngForm">
-      <h1 class="mb-4 text-center">EMPLOYEE FORM</h1>
-
       <div class="mb-3 row">
         <label for="name" class="col-sm-4 col-form-label">Name <span style="color: red;">*</span></label>
         <div class="col-sm-8">                                                                                          <!--name control also a reference variable contails properties for specific field (name field)-->
@@ -74,6 +89,15 @@
         </div>
       </div>
       <div class="mb-3 row">
+        <label for="dob" class="col-sm-4 col-form-label">Date of Joining <span style="color: red;">*</span></label>
+        <div class="col-sm-8"> 
+          <input type="date" id="dob" [(ngModel)]="employee.doj" name="doj"  [max]="today" [disabled]="mode==='view'" class="form-control" required #dojCtrl="ngModel"/>
+          <div *ngIf="dojCtrl.invalid && (dojCtrl.dirty || dojCtrl.touched)" class="text-danger">
+            <small *ngIf="dojCtrl.errors?.['required']">Date of Birth is required</small>
+          </div>
+        </div>
+      </div>
+      <div class="mb-3 row">
         <label class="col-sm-4 col-form-label">Do you have Added your account? <span style="color: red;">*</span></label>
         <div class="col-sm-8">
           <div class="form-check form-check-inline">
@@ -92,7 +116,7 @@
       <div *ngIf="hasAccount && mode != 'view'" class="mb-3 row align-items-center">
         <label for="accountId" class="col-sm-4 col-form-label">Find Your Account By Mobile <span style="color: red;">*</span></label>
         <div class="col-sm-8 d-flex">
-          <input type="text" id="Mobile" [(ngModel)]="employee.account.mobileNumber" name="account.mobileNumber" [disabled]="mode==='view'" required (input)="filterNumericInput($event)"  pattern="[0-9]{10}" minlength="10" maxlength="10" class="form-control flex-grow-1" #accountCtrl="ngModel" />
+          <input type="text" id="Mobile" [(ngModel)]="employee.account.mobileNumber" autocomplete="off" name="account.mobileNumber" [disabled]="mode==='view'" required (input)="filterNumericInput($event)"  pattern="[0-9]{10}" minlength="10" maxlength="10" class="form-control flex-grow-1" #accountCtrl="ngModel" />
           <div *ngIf="accountCtrl.invalid && accountCtrl.touched" class="text-danger"></div>
           <button type="button" (click)="openAccountModal()" class="btn btn-primary ms-2" [disabled]="mode==='view'">Search</button>
         </div>
@@ -110,7 +134,7 @@
           <div class="col-sm-8">
             <input type="text" id="newAccountNumber" [(ngModel)]="newAccountDetails.accountNumber"
               name="newAccountNumber" [disabled]="mode==='view'" class="form-control" [required]="!hasAccount"
-              (input)="filterNumericInput($event)"
+              (input)="filterNumericInput($event)" minlength="12" maxlength="12"
               #newAccountNumberCtrl="ngModel" />
             <div *ngIf="newAccountNumberCtrl.invalid && (newAccountNumberCtrl.dirty || newAccountNumberCtrl.touched)"
               class="text-danger">
@@ -215,17 +239,16 @@
 
   <app-account-list *ngIf="showModal" [accountId]="employee.account.mobileNumber" (accountSelected)="onAccountSelected($event)">
   </app-account-list>
+  
 <app-message
   [message]="message"
   (closed)="message = null">
-</app-message>      <!--used for show the message model in the view-->
+</app-message>      
 </div>
-
 
 <style>
  .form-container {
-  max-width: 1500px; /* Example: A very wide max-width for forms */
-  width: 95%; /* Take up 95% of available width up to max-width */
+  width: 100%; /* Take up 95% of available width up to max-width */
 }
 h1 {
   background-color: #e8e8e5; 
@@ -233,4 +256,26 @@ h1 {
   border-radius: 5px;
   margin-bottom: 20px;
 }
+div.dropdown:hover > ul.dropdown-menu {
+  display: block; 
+}
+
+ul.dropdown-menu {
+  display: none;
+}
+
+.header-with-divider {
+  border-right: 1px solid #dee2e6; 
+  padding-right: 1rem; 
+  margin-right: 1rem;  
+  
+  display: flex;
+  align-items: center;
+  white-space: nowrap; 
+}
+.header-ash-gradient {
+  background: linear-gradient(to bottom, #000000, #373636); 
+  background-color: #141412; 
+}
+
 </style>
