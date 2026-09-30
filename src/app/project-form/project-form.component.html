@@ -1,0 +1,81 @@
+<app-header
+[pageTitle]="'Employee Management'"
+[subTitle]="pageName"
+[loggedInUsername]="loggedInUsername"
+(logout)="logOut()">
+</app-header>
+<div class="container-fluid content-wrapper" style="font-size: 13px;">
+  <div class="p-4 shadow rounded form-container">
+    <form (ngSubmit)="mode === 'edit' ? updateProject() : saveProject()" #projectForm="ngForm">
+      <div class="mb-3 row">
+        <label for="name" class="col-sm-4 col-form-label"> Project Name <span style="color: red;">*</span></label>
+        <div class="col-sm-8">                                                                                          
+          <input type="text" id="name" [(ngModel)]="project.name" name="name" [disabled]="mode==='view'" class="form-control" required minlength="3" (input)="filterTextInput($event)" #nameCtrl="ngModel"/>
+          <div *ngIf="nameCtrl.invalid && (nameCtrl.dirty || nameCtrl.touched)" class="text-danger">
+            <small *ngIf="nameCtrl.errors?.['required']">Name is required</small>
+            <small *ngIf="nameCtrl.errors?.['minlength']">Minimum 3 characters required</small>
+          </div>
+        </div>
+      </div>  
+      
+      <div class="mb-3 row">
+        <label for="name" class="col-sm-4 col-form-label"> Client Name <span style="color: red;">*</span></label>
+        <div class="col-sm-8">                                                                                          
+          <input type="text" id="client" [(ngModel)]="project.client" name="client" [disabled]="mode==='view'" class="form-control" required minlength="3" (input)="filterTextInput($event)" #clientCtrl="ngModel"/>
+          <div *ngIf="clientCtrl.invalid && (clientCtrl.dirty || clientCtrl.touched)" class="text-danger">
+            <small *ngIf="clientCtrl.errors?.['required']">Client Name is required</small>
+            <small *ngIf="clientCtrl.errors?.['minlength']">Minimum 3 characters required</small>
+          </div>
+        </div>
+      </div>  
+
+      <div class="mb-3 row">
+        <label for="email" class="col-sm-4 col-form-label">Description<span style="color: red;">*</span></label>
+        <div class="col-sm-8">                                                                                        
+          <input type="text" id="description" [(ngModel)]="project.description" name="description"required [disabled]="mode==='view'" class="form-control"   #descriptionCtrl="ngModel"/>
+          <div *ngIf="descriptionCtrl.invalid && (descriptionCtrl.dirty || descriptionCtrl.touched)" class="text-danger">
+            <small *ngIf="descriptionCtrl.errors?.['required']">Description is required</small>
+            <small *ngIf="descriptionCtrl.errors?.['minlength']">Minimum 3 characters required</small>
+          </div>
+        </div>
+      </div>
+      <div class="mb-3 row">
+        <label for="dob" class="col-sm-4 col-form-label">Start Date <span style="color: red;">*</span></label>
+        <div class="col-sm-8"> 
+          <input type="date" id="startdate" [(ngModel)]="project.startDate" name="dob" [disabled]="mode==='view'"   [min]="today" class="form-control" required #startCtrl="ngModel"/>
+          <div *ngIf="startCtrl.invalid && (startCtrl.dirty || startCtrl.touched)" class="text-danger">
+            <small *ngIf="startCtrl.errors?.['required']">Start Date is required</small>
+          </div>
+        </div>
+      </div>
+       <div class="mb-3 row">
+        <label for="dob" class="col-sm-4 col-form-label">End Date <span style="color: red;">*</span></label>
+        <div class="col-sm-8"> 
+          <input type="date" id="enddate" [(ngModel)]="project.endDate" name="endDate"  [disabled]="mode==='view'"  [min]="today" class="form-control" required #endCtrl="ngModel"/>
+          <div *ngIf="endCtrl.invalid && (endCtrl.dirty || endCtrl.touched)" class="text-danger">
+            <small *ngIf="endCtrl.errors?.['required']">End Date is required</small>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mb-3 row">
+        <label for="skills" class="col-sm-4 col-form-label">Required Skills <span style="color: red;">*</span></label>
+        <div class="col-sm-8">
+          <input type="text" id="skills" [(ngModel)]="project.requiredSkill" name="skills" [disabled]="mode==='view'" class="form-control" required #skillsCtrl="ngModel"/>
+          <div *ngIf="skillsCtrl.invalid && (skillsCtrl.dirty || skillsCtrl.touched)" class="text-danger">
+            <small *ngIf="skillsCtrl.errors?.['required']">Skills are required</small>
+            </div>
+        </div>
+      </div>
+      <div class="text-center mt-4">
+        <button type="submit" class="btn btn-success px-4" *ngIf="mode !== 'view'" [disabled]="projectForm.invalid">
+          {{ mode === 'edit' ? 'Update' : 'Save' }}
+        </button>
+        <button type="button" class="btn btn-secondary px-4 ms-2" [routerLink]="['/project-list']">
+          Back
+        </button>
+      </div>
+    </form>
+  </div>
+   <app-message [message]="message" (closed)="message = null">
+  </app-message>

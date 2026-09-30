@@ -1,0 +1,31 @@
+ .form-container {
+  width: 100%; /* Take up 95% of available width up to max-width */
+}
+h1 {
+  background-color: #e8e8e5; 
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+div.dropdown:hover > ul.dropdown-menu {
+  display: block; 
+}
+
+ul.dropdown-menu {
+  display: none;
+}
+
+.header-with-divider {
+  border-right: 1px solid #dee2e6; 
+  padding-right: 1rem; 
+  margin-right: 1rem;  
+  
+  display: flex;
+  align-items: center;
+  white-space: nowrap; 
+}
+.header-ash-gradient {
+  background: linear-gradient(to bottom, #000000, #373636); 
+  background-color: #141412; 
+}
+

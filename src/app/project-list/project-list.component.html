@@ -1,0 +1,310 @@
+<app-header [pageTitle]="'EMPLOYEE MANAGEMENT'" [subTitle]="'Project List'" [loggedInUsername]="loggedInUsername"
+  (logout)="LogOut()">
+</app-header>
+
+<div class="project-container">
+  <!-- Header Section -->
+  <div class="page-header">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h2 class="page-title">
+          <i class="bi bi-folder me-2 text-primary"></i>
+          Project Management
+        </h2>
+        <p class="text-muted">Manage and track all projects in your organization</p>
+      </div>
+      <div class="d-flex gap-2">
+        <button class="btn btn-outline-primary" (click)="addNewProject()">
+          <i class="bi bi-plus-circle me-1"></i>
+          Add Project
+        </button>
+        <button class="btn btn-success" (click)="downloadExcel()" title="Download Excel">
+          <i class="bi bi-file-earmark-excel me-1"></i>
+          Export Excel
+        </button>
+        <button class="btn btn-danger" (click)="savePdf()" title="Download PDF">
+          <i class="bi bi-file-earmark-pdf me-1"></i>
+          Export PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Bell -->
+  <div *ngIf="showBell && (!showCompletedProjects && expiringProjects.length > 0)" 
+       class="position-fixed top-50 end-0 p-3" 
+       style="z-index: 1050;">
+    <button class="btn btn-primary position-relative notification-bell" (click)="showToast = true">
+      <i class="bi bi-bell-fill"></i>
+      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+        {{ expiringProjects.length }}
+      </span>
+    </button>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast-container position-fixed top-50 end-0 p-3" style="z-index: 1100;">
+    <div class="toast align-items-center text-bg-primary border-0 show" 
+         role="alert" 
+         aria-live="assertive" 
+         aria-atomic="true" 
+         *ngIf="showToast">
+      <div class="d-flex">
+        <div class="toast-body">
+          <div>
+            You have {{ expiringProjects.length }} project(s) nearing their end date!
+            <button class="btn btn-sm btn-outline-warning ms-2" (click)="showExpired()">View</button>
+          </div>
+        </div>
+        <button type="button" 
+                class="btn-close btn-close-white me-2 m-auto" 
+                (click)="showToast = false" 
+                aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search and Filter Section -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">
+        <i class="bi bi-funnel me-2"></i>
+        Search & Filter
+      </h5>
+      <div class="row">
+        <div class="col-md-4">
+          <label for="filterType" class="form-label">Filter By</label>
+          <select id="filterType" 
+                  [(ngModel)]="filterType" 
+                  (ngModelChange)="onFilterChange()"
+                  class="form-select">
+            <option value="Name">Project Name</option>
+            <option value="Client">Client</option>
+            <option value="Status">Status</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label for="searchTerm" class="form-label">Search</label>
+          <input type="text" 
+                 id="searchTerm" 
+                 class="form-control" 
+                 placeholder="Search projects..." 
+                 [(ngModel)]="searchTerm"
+                 (input)="onSearchChange()">
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+          <button class="btn btn-outline-secondary" (click)="clearFilters()" title="Clear Filters">
+            <i class="bi bi-x-circle me-1"></i>
+            Clear
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="row mb-4" *ngIf="!isLoading">
+    <div class="col-md-3">
+      <div class="card stat-card">
+        <div class="card-body text-center">
+          <i class="bi bi-folder-fill text-primary stat-icon"></i>
+          <h4 class="stat-number">{{ allProjects.length }}</h4>
+          <p class="stat-label">Total Projects</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card stat-card">
+        <div class="card-body text-center">
+          <i class="bi bi-play-circle-fill text-success stat-icon"></i>
+          <h4 class="stat-number">{{ getActiveProjectsCount() }}</h4>
+          <p class="stat-label">Active Projects</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card stat-card">
+        <div class="card-body text-center">
+          <i class="bi bi-check-circle-fill text-warning stat-icon"></i>
+          <h4 class="stat-number">{{ getCompletedProjectsCount() }}</h4>
+          <p class="stat-label">Completed Projects</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card stat-card">
+        <div class="card-body text-center">
+          <i class="bi bi-exclamation-triangle-fill text-danger stat-icon"></i>
+          <h4 class="stat-number">{{ expiringProjects.length }}</h4>
+          <p class="stat-label">Expiring Soon</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2 text-muted">Loading projects...</p>
+  </div>
+
+  <!-- Project Table -->
+  <div *ngIf="!isLoading" class="card">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="card-title mb-0">
+          <i class="bi bi-list-ul me-2"></i>
+          Project List
+          <span class="badge bg-primary ms-2">{{ filteredProjects.length }}</span>
+        </h5>
+        <div class="btn-group" role="group">
+          <button class="btn btn-outline-primary btn-sm" 
+                  [class.active]="!showCompletedProjects && !showExpiredProject"
+                  (click)="showAllProjects()">
+            <i class="bi bi-list me-1"></i>
+            All Projects
+          </button>
+          <button class="btn btn-outline-success btn-sm" 
+                  [class.active]="showCompletedProjects"
+                  (click)="toggleCompletedProjects()">
+            <i class="bi bi-check-circle me-1"></i>
+            Completed
+          </button>
+          <button class="btn btn-outline-warning btn-sm" 
+                  [class.active]="showExpiredProject"
+                  (click)="toggleExpiredProjects()">
+            <i class="bi bi-exclamation-triangle me-1"></i>
+            Expiring
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="filteredProjects.length > 0; else noProjectsFound" class="table-responsive">
+        <table class="table table-hover">
+          <thead class="table-dark">
+            <tr>
+              <th>Project Name</th>
+              <th>Description</th>
+              <th>Client</th>
+              <th>Required Skills</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let project of filteredProjects">
+              <td>
+                <div class="d-flex align-items-center">
+                  <div class="project-icon me-2">
+                    <i class="bi bi-folder-fill text-primary"></i>
+                  </div>
+                  <strong>{{ project.name }}</strong>
+                </div>
+              </td>
+              <td>
+                <span class="text-truncate d-inline-block" 
+                      style="max-width: 200px;" 
+                      [title]="project.description">
+                  {{ project.description }}
+                </span>
+              </td>
+              <td>
+                <span class="badge bg-info">{{ project.client }}</span>
+              </td>
+              <td>
+                <div class="skills-container">
+                  <span *ngFor="let skill of project.requiredSkill?.split(',')" 
+                        class="badge bg-light text-dark me-1">
+                    {{ skill.trim() }}
+                  </span>
+                </div>
+              </td>
+              <td>{{ project.startDate | date:'MMM dd, yyyy' }}</td>
+              <td>{{ project.endDate | date:'MMM dd, yyyy' }}</td>
+              <td>
+                <span *ngIf="isProjectActive(project)" 
+                      class="badge bg-success">
+                  <i class="bi bi-play-circle me-1"></i>Active
+                </span>
+                <span *ngIf="isProjectCompleted(project)" 
+                      class="badge bg-secondary">
+                  <i class="bi bi-check-circle me-1"></i>Completed
+                </span>
+                <span *ngIf="isProjectExpiring(project)" 
+                      class="badge bg-warning">
+                  <i class="bi bi-exclamation-triangle me-1"></i>Expiring
+                </span>
+              </td>
+              <td>
+                <div class="btn-group" role="group">
+                  <button class="btn btn-outline-info btn-sm" 
+                          (click)="viewProject(project)" 
+                          title="View Details">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                  <button class="btn btn-outline-warning btn-sm" 
+                          (click)="editProject(project)" 
+                          title="Edit Project">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button class="btn btn-outline-primary btn-sm" 
+                          (click)="showAssignedListModelView(project)" 
+                          title="view assigned employees">
+                    <i class="bi bi-view-list"></i>
+                  </button>
+
+                  <button class="btn btn-outline-success btn-sm" 
+                          (click)="assignProject(project)" 
+                          title="Assign Project">
+                    <i class="bi bi-person-plus"></i>
+                  </button>
+                  <button class="btn btn-outline-danger btn-sm" 
+                          (click)="deleteProject(project)" 
+                          title="Delete Project">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <ng-template #noProjectsFound>
+        <div class="text-center py-4">
+          <i class="bi bi-inbox display-1 text-muted"></i>
+          <p class="text-muted mt-2">No projects found matching your search criteria.</p>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+
+  <!-- Messages -->
+  <app-message [message]="message" (closed)="message = null"></app-message>
+
+  <!-- Modals -->
+  <app-project-assign-model *ngIf="showModal" 
+                            [selectedProject]="selectedProject"
+                            [allEmployeesUnAssigned]="allEmployeesUnAssigned"
+                            (employeeAssigned)="onProjectAssigned($event)"
+                            (close)="closeAssignModal()">
+  </app-project-assign-model>
+
+  <app-assigned-list-model *ngIf="showAssignedListModal" 
+                           [selectedProject]="selectedProject"
+                           [AllocatedEmployees]="AllocatedEmployees"
+                           (confirmDeallocateEmployee)="onConfirmDeallocateEmployee($event)"
+                           (close)="closeAssignedListModal()">
+  </app-assigned-list-model>
+
+  <app-confirmation-modal *ngIf="showConfirmationModal" 
+                          [message]="confirmationMessage" 
+                          [title]="'Confirm Deletion'"
+                          (confirmed)="onDeleteConfirmed($event)"
+                          (cancelled)="onDeleteCancelled()">
+  </app-confirmation-modal>
+</div>

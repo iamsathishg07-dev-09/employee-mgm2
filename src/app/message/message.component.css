@@ -1,74 +1,110 @@
-/* Modal backdrop styles */
-    .modal-backdrop {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1050; /* Ensure it's above other content */
-    }
+/* Backdrop */
+.modern-backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1060;
+  backdrop-filter: blur(2px);
+}
 
-    /* Modal content styles */
-    .modal-content {
-      background-color: #fff;
-      border-radius: 0.5rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-      width: 90%;
-      max-width: 400px; /* Max width for readability */
-      animation: fadeIn 0.3s ease-out; /* Simple fade-in animation */
-    }
+/* Modal */
+.modern-modal {
+  width: 100%;
+  max-width: 460px;
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  animation: fadeInUp 0.35s ease-out;
+}
 
-    .modal-header {
-      padding: 1rem;
-      border-bottom: 1px solid #dee2e6;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-top-left-radius: 0.5rem;
-      border-top-right-radius: 0.5rem;
-    }
+/* Header */
+.modern-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+}
 
-    .modal-title {
-      margin-bottom: 0;
-      font-size: 1.25rem;
-      font-weight: 500;
-    }
+.modern-header .title {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+}
 
-    .close-button {
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      cursor: pointer;
-      padding: 0;
-      line-height: 1;
-      color: #000; /* Default color for close button */
-      opacity: 0.5;
-    }
+.icon-btn {
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: #fff;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
 
-    .close-button:hover {
-      opacity: 0.75;
-    }
+.icon-btn:hover {
+  background: rgba(255,255,255,0.25);
+  transform: translateY(-1px);
+}
 
-    .modal-body {
-      padding: 1rem;
-    }
+/* Body */
+.modern-body {
+  padding: 18px 16px 8px 16px;
+}
 
-    .modal-footer {
-      padding: 1rem;
-      border-top: 1px solid #dee2e6;
-      display: flex;
-      justify-content: flex-end;
-      border-bottom-left-radius: 0.5rem;
-      border-bottom-right-radius: 0.5rem;
-    }
+.message-text {
+  margin: 0;
+  color: #2c3e50;
+  line-height: 1.5;
+}
 
+/* Footer */
+.modern-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px 16px 16px 16px;
+}
 
-    /* Animation */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+.btn-primary-gradient {
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  box-shadow: 0 8px 20px rgba(32, 201, 151, 0.25);
+  transition: all 0.2s ease;
+}
+
+.btn-primary-gradient:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(32, 201, 151, 0.35);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .modern-modal {
+    margin: 0 12px;
+  }
+}

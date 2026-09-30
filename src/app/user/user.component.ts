@@ -26,7 +26,6 @@ export class UserComponent {
          setTimeout(() => {
         this.router.navigate(['/login']);
         }, 3000);
-       this.newUser = { username: "", password: "" };
       },
        error: (err:any) => {
          this.showError(err)

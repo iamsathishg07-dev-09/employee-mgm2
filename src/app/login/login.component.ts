@@ -15,6 +15,7 @@ import { MessageComponent } from '../message/message.component';
 export class LoginComponent {
   loginData: User = { username: '', password: '' };
   message: string | null = null; 
+  
   private readonly USER_KEY = 'loggedInUsername'; //for storing username in session storage
 
 
@@ -23,10 +24,19 @@ constructor(private userService: UserService, private router: Router) { }
  loginUser(): void {
   this.userService.loginUserService(this.loginData).subscribe({
        next: () => {
-        this.showSuccess("Login Success !!")
          sessionStorage.setItem(this.USER_KEY,this.loginData.username)
          setTimeout(() => {
+      
+const role = localStorage.getItem('role');
+      if (role === 'Admin') {
         this.router.navigate(['/employee-list']);
+      } else if (role === 'employee') {
+        this.router.navigate(['/employee-home']);
+      } else if (role === 'Manager') {
+        this.router.navigate(['/manager-home']);
+      } else {
+        this.message = "Unknown role. Access denied.";
+      }
         }, 3000);
       },
       error: (err:any) => {
@@ -35,9 +45,6 @@ constructor(private userService: UserService, private router: Router) { }
   });
 }
 
-showSuccess(msg: string) {
-  this.message = msg;
-}
 
 showError(error: any) {
   if (error.status == 401) {

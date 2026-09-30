@@ -1,3 +1,5 @@
+import { project } from "../project/project.model";
+
   export interface Employee {
     account: any;
     id:number
@@ -9,6 +11,7 @@
     department: string;
     skills: string;
     doj:string;
+    project:any;  
     [key: string]: any;
   }
   

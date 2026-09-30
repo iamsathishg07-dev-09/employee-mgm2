@@ -3,21 +3,12 @@
     <h2 class="text-center mb-3">Registration</h2>
     <form (ngSubmit)="createUser()" class="justify-content-center" #registerForm="ngForm">
       <div class="form-group mb-2 fw-semibold">
-        <label for="username" class="mb-2">Username:</label>
-        <input
-          type="text"
-          placeholder="username"
-          class="form-control px-2 py-1"
+        <label for="username" class="mb-2">Username</label>
+        <input type="text" placeholder="username" class="form-control px-2 py-1"
           [ngClass]="{'is-invalid': usernameInput.invalid && (usernameInput.dirty || usernameInput.touched), 'is-valid': usernameInput.valid && (usernameInput.dirty || usernameInput.touched)}"
-          id="username"
-          name="username"
-          [(ngModel)]="newUser.username"
-          required
-          minlength="3"
-          maxlength="50"
-          #usernameInput="ngModel"
-        >
-        <div *ngIf="usernameInput.invalid && (usernameInput.dirty || usernameInput.touched)" class="invalid-feedback" >
+          id="username" name="username" [(ngModel)]="newUser.username" required minlength="3" maxlength="50"
+          #usernameInput="ngModel">
+        <div *ngIf="usernameInput.invalid && (usernameInput.dirty || usernameInput.touched)" class="invalid-feedback">
           <div *ngIf="usernameInput.errors?.['required']">
             Username is required.
           </div>
@@ -30,21 +21,31 @@
         </div>
       </div>
 
+      <div class="form-group mb-2 fw-semibold">
+        <label for="role" class="mb-2">Role</label>
+        <select id="role" name="role" class="form-select" [ngClass]="{
+      'is-invalid': roleInput.invalid && (roleInput.dirty || roleInput.touched),
+      'is-valid': roleInput.valid && (roleInput.dirty || roleInput.touched)
+    }" required [(ngModel)]="newUser.role" #roleInput="ngModel">
+          <option value="" disabled selected>Select a Role</option>
+          <option value="employee">Employee</option>
+          <option value="manager">Manager</option>
+          <option value="Admin">Admin</option>
+        </select>
+        <div *ngIf="roleInput.invalid && (roleInput.dirty || roleInput.touched)" class="invalid-feedback">
+          <div *ngIf="roleInput.errors?.['required']">
+            Role is required.
+          </div>
+        </div>
+      </div>
+
+
       <div class="form-group mb-4 fw-semibold">
-        <label for="password" class="mb-2">Password:</label>
-        <input
-          type="password"
-          placeholder="**********"
-          class="form-control px-2 py-1"
+        <label for="password" class="mb-2">Password</label>
+        <input type="password" placeholder="*********" class="form-control px-2 py-1"
           [ngClass]="{'is-invalid': passwordInput.invalid && (passwordInput.dirty || passwordInput.touched), 'is-valid': passwordInput.valid && (passwordInput.dirty || passwordInput.touched)}"
-          id="password"
-          name="password"
-          [(ngModel)]="newUser.password"
-          required
-          minlength="6"
-          maxlength="24"
-          #passwordInput="ngModel"
-        >
+          id="password" name="password" [(ngModel)]="newUser.password" required minlength="6" maxlength="24"
+          #passwordInput="ngModel">
         <div *ngIf="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)" class="invalid-feedback">
           <div *ngIf="passwordInput.errors?.['required']">
             Password is required.

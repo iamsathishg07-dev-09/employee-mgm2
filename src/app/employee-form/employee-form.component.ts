@@ -6,11 +6,12 @@ import { ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet } fr
 import { AccountListComponent } from '../account-list/account-list.component';
 import { MessageComponent } from '../message/message.component';
 import { AccountService } from '../services/account.service';
+import { HeaderComponent } from '../shared/header/header.component';
 
 @Component({
   selector: 'app-employee-form',
   standalone: true,
-  imports: [CommonModule, FormsModule,AccountListComponent,RouterOutlet,RouterLink,MessageComponent],
+  imports: [CommonModule, FormsModule,AccountListComponent,RouterLink,MessageComponent,HeaderComponent],
   templateUrl: './employee-form.component.html'
 }) 
 export class EmployeeFormComponent implements OnInit {
@@ -21,11 +22,17 @@ export class EmployeeFormComponent implements OnInit {
   today!: string; //for setting the date field validation
   hasAccount: boolean = true; //to ensure whether employee has existing account or want to add new
 
+  fromPage:string='';   //to get the page from which we navigate here
+  searchSkill:string='';
+  projectId!:number;
+  
+
   //below is for model view of success and error messages
   message:string | null=null;
 
   private readonly USER_KEY = 'loggedInUsername';
   loggedInUsername:string | null=null;
+  pageName:string='Employee'
 
   //view of account details for who don't added accounts
   newAccountDetails = {
@@ -54,15 +61,31 @@ export class EmployeeFormComponent implements OnInit {
   constructor(private employeeService: EmployeeService,
      private accountService:AccountService, //angular uses dependency injection by declaring in constructor it will automatically inject the instance
      private route: ActivatedRoute,  //will get & hold the route parameters from the active route page
-     private router: Router) {}  //router for navigation & route for getting route parameters from route url
+     private router: Router,         //router for navigation & route for getting route parameters from route url
+    ) 
+    {
+      this.route.queryParams.subscribe(params=>
+        {this.fromPage=params['from'];
+        this.searchSkill=params['search'];
+        this.projectId=params['projectid'];
+        }
+      )
+    }  
+     
 
   ngOnInit(): void {
 
-  if(!sessionStorage.getItem(this.USER_KEY))
-    {
-    this.router.navigate(['/login']);    
-    }
-  this.loggedInUsername=sessionStorage.getItem(this.USER_KEY);
+  // if(!sessionStorage.getItem(this.USER_KEY))
+  //   {
+  //   this.router.navigate(['/login']);    
+  //   }
+  
+  // Check if we're in browser environment before accessing sessionStorage
+  if (typeof window !== 'undefined') {
+    this.loggedInUsername = sessionStorage.getItem(this.USER_KEY);
+  } else {
+    this.loggedInUsername = 'Demo User'; // Default value for SSR
+  }
   const now = new Date();
   this.today = now.toISOString().split('T')[0];
  
@@ -215,12 +238,35 @@ onAccountOptionChange(): void {
       this.selectedAccount = null;
     }
   }
-  goToLoginPage()
+  logOut()
   {
-     console.log('Logging out (placeholder action)');
+    sessionStorage.removeItem(this.USER_KEY);
+    console.log('Logging out (placeholder action)');
+    
     this.router.navigate(['/login']);
   }
+  goBack()
+  {
+    if(this.fromPage==='employee-list')
+    {
+      console.log("back to employee-list")
+      this.router.navigate(['/employee-list']);
 
+    }
+    else if(this.fromPage==='project-list')
+    {
+            console.log("back to project-list")
 
- 
-}
+      this.router.navigate(['/project-list'],{queryParams:{
+        search:this.searchSkill,
+        projectid:this.projectId,
+      }
+    });
+
+      }
+    }
+    gotoEmpList()
+    {
+      this.router.navigate(['/employee-list']);
+    }
+  }

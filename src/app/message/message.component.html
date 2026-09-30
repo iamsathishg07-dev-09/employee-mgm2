@@ -1,16 +1,22 @@
- <div *ngIf="message" class="modal-backdrop">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2 class="modal-title">Status Message</h2>
-          <button type="button" class="close-button" aria-label="Close" (click)="closeModal()">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body" >
-          <p>{{ message }}</p>
-        </div>
-        <div class="modal-footer">
-          <button (click)="closeModal()" class="btn btn-secondary">Close</button>
-        </div>
+<div *ngIf="message" class="modern-backdrop">
+  <div class="modern-modal">
+    <div class="modern-header">
+      <div class="title">
+        <i class="bi bi-info-circle-fill me-2"></i>
+        <span>Status Message</span>
       </div>
+      <button type="button" class="icon-btn" aria-label="Close" (click)="closeModal()">
+        <i class="bi bi-x-lg"></i>
+      </button>
     </div>
+    <div class="modern-body">
+      <p class="message-text">{{ message }}</p>
+    </div>
+    <div class="modern-footer">
+      <button (click)="closeModal()" class="btn btn-primary-gradient">
+        <i class="bi bi-check2 me-1"></i>
+        OK
+      </button>
+    </div>
+  </div>
+</div>

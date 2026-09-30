@@ -7,11 +7,11 @@ import { Observable } from 'rxjs';
 })
 export class AccountService {
   
-private baseUrl = 'http://localhost:8080/EmployeeRestApi/api/accounts/';
+private baseUrl = 'http://localhost:8080/EmployeeRestApi/api/secure/accounts/';
 
   constructor(private http: HttpClient) { }
 
- saveAccount(Account: any): Observable<any> {
+saveAccount(Account: any): Observable<any> {
  return this.http.post(this.baseUrl, Account);
    }
 

@@ -3,7 +3,7 @@
 
   @Component({
     selector: 'app-message',
-    imports: [NgClass,NgIf],
+    imports: [NgIf],
     templateUrl: './message.component.html',
     styleUrl: './message.component.css'
   })

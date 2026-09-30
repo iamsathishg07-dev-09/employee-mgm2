@@ -1,17 +1,28 @@
-<div *ngIf="message" class="modal-backdrop">
-  <div class="modal-content confirmation-modal">
-    <div class="modal-header">
-      <h2 class="modal-title">{{ title }}</h2>
-      <button type="button" class="close-button" aria-label="Close" (click)="onCancel()">
-        <span aria-hidden="true">&times;</span>
+<div *ngIf="message" class="modern-backdrop">
+  <div class="modern-modal">
+    <div class="modern-header danger">
+      <div class="title">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <span>{{ title }}</span>
+      </div>
+      <button type="button" class="icon-btn" aria-label="Close" (click)="onCancel()">
+        <i class="bi bi-x-lg"></i>
       </button>
     </div>
-    <div class="modal-body">
-      <p>{{ message }}</p>
+
+    <div class="modern-body">
+      <p class="message-text">{{ message }}</p>
     </div>
-    <div class="modal-footer">
-      <button (click)="onCancel()" class="btn btn-secondary">Cancel</button>
-      <button (click)="onConfirm()" class="btn btn-primary">Ok</button>
+
+    <div class="modern-footer">
+      <button (click)="onCancel()" class="btn btn-outline">
+        <i class="bi bi-x-circle me-1"></i>
+        Cancel
+      </button>
+      <button (click)="onConfirm()" class="btn btn-danger-gradient">
+        <i class="bi bi-check2-circle me-1"></i>
+        Confirm
+      </button>
     </div>
   </div>
 </div>

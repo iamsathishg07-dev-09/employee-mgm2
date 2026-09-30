@@ -1,10 +1,10 @@
-import { NgClass, NgIf } from '@angular/common';
+import { CommonModule, NgClass, NgIf } from '@angular/common';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-confirmation-modal',
   standalone:true,
-  imports: [NgClass,NgIf],
+  imports: [CommonModule],
   templateUrl: './confirmation-modal.component.html',
   styleUrls: ['./confirmation-modal.component.css']
 })

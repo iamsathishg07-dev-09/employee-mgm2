@@ -1,0 +1,336 @@
+<app-header [pageTitle]="'EMPLOYEE MANAGEMENT'" [subTitle]="'Reports'" [loggedInUsername]="loggedInUsername"
+  (logout)="LogOut()">
+</app-header>
+
+
+<div class="report-container">
+  <!-- Header Section -->
+  <div class="report-header">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h2 class="report-title">
+          <i class="bi bi-graph-up me-2 text-primary"></i>
+          Reports Dashboard
+        </h2>
+        <p class="text-muted">Generate and analyze employee and project reports</p>
+      </div>
+      <div class="d-flex gap-2">
+        <button class="btn btn-outline-primary" (click)="refreshData()" [disabled]="loading">
+          <i class="bi bi-arrow-clockwise me-1" [class.spin]="loading"></i>
+          Refresh
+        </button>
+        <button class="btn btn-success" (click)="exportToCSV()" [disabled]="loading">
+          <i class="bi bi-download me-1"></i>
+          Export CSV
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    {{ error }}
+    <button type="button" class="btn-close" (click)="error = ''"></button>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2 text-muted">Loading report data...</p>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!loading" class="report-content">
+    <!-- Report Type Selection -->
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5 class="card-title">
+          <i class="bi bi-funnel me-2"></i>
+          Report Type
+        </h5>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-check form-check-inline">
+              <input 
+                class="form-check-input" 
+                type="radio" 
+                name="reportType" 
+                id="employeeReport" 
+                value="employee" 
+                [(ngModel)]="reportType"
+                (change)="onReportTypeChange()">
+              <label class="form-check-label" for="employeeReport">
+                <i class="bi bi-people me-1"></i>
+                Employee Report
+              </label>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-check form-check-inline">
+              <input 
+                class="form-check-input" 
+                type="radio" 
+                name="reportType" 
+                id="projectReport" 
+                value="project" 
+                [(ngModel)]="reportType"
+                (change)="onReportTypeChange()">
+              <label class="form-check-label" for="projectReport">
+                <i class="bi bi-folder me-1"></i>
+                Project Report
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+      <div class="col-md-3">
+        <div class="card stat-card">
+          <div class="card-body text-center">
+            <i class="bi bi-people-fill text-primary stat-icon"></i>
+            <h4 class="stat-number">{{ totalEmployees }}</h4>
+            <p class="stat-label">Total Employees</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card stat-card">
+          <div class="card-body text-center">
+            <i class="bi bi-folder-fill text-success stat-icon"></i>
+            <h4 class="stat-number">{{ totalProjects }}</h4>
+            <p class="stat-label">Total Projects</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card stat-card">
+          <div class="card-body text-center">
+            <i class="bi bi-play-circle-fill text-warning stat-icon"></i>
+            <h4 class="stat-number">{{ activeProjects }}</h4>
+            <p class="stat-label">Active Projects</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card stat-card">
+          <div class="card-body text-center">
+            <i class="bi bi-person-check-fill text-info stat-icon"></i>
+            <h4 class="stat-number">{{ employeesWithProjects }}</h4>
+            <p class="stat-label">Assigned Employees</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5 class="card-title">
+          <i class="bi bi-funnel me-2"></i>
+          Filters
+        </h5>
+        
+        <!-- Employee Filters -->
+        <div *ngIf="reportType === 'employee'" class="row">
+          <div class="col-md-4">
+            <label for="departmentFilter" class="form-label">Department</label>
+            <select 
+              class="form-select" 
+              id="departmentFilter" 
+              [(ngModel)]="departmentFilter"
+              (change)="applyFilters()">
+              <option value="">All Departments</option>
+              <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label for="skillFilter" class="form-label">Skill</label>
+            <select 
+              class="form-select" 
+              id="skillFilter" 
+              [(ngModel)]="skillFilter"
+              (change)="applyFilters()">
+              <option value="">All Skills</option>
+              <option *ngFor="let skill of skills" [value]="skill">{{ skill }}</option>
+            </select>
+          </div>
+          <div class="col-md-4 d-flex align-items-end">
+            <button class="btn btn-outline-secondary" (click)="clearFilters()">
+              <i class="bi bi-x-circle me-1"></i>
+              Clear Filters
+            </button>
+          </div>
+        </div>
+
+        <!-- Project Filters -->
+        <div *ngIf="reportType === 'project'" class="row">
+          <div class="col-md-4">
+            <label for="statusFilter" class="form-label">Status</label>
+            <select 
+              class="form-select" 
+              id="statusFilter" 
+              [(ngModel)]="projectStatusFilter"
+              (change)="applyFilters()">
+              <option value="">All Status</option>
+              <option value="active">Active</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label for="clientFilter" class="form-label">Client</label>
+            <select 
+              class="form-select" 
+              id="clientFilter" 
+              [(ngModel)]="clientFilter"
+              (change)="applyFilters()">
+              <option value="">All Clients</option>
+              <option *ngFor="let client of clients" [value]="client">{{ client }}</option>
+            </select>
+          </div>
+          <div class="col-md-4 d-flex align-items-end">
+            <button class="btn btn-outline-secondary" (click)="clearFilters()">
+              <i class="bi bi-x-circle me-1"></i>
+              Clear Filters
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Section -->
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="card-title mb-0">
+            <i class="bi bi-list-ul me-2"></i>
+            {{ reportType === 'employee' ? 'Employee' : 'Project' }} Report Results
+            <span class="badge bg-primary ms-2">{{ reportType === 'employee' ? filteredEmployees.length : filteredProjects.length }}</span>
+          </h5>
+        </div>
+
+        <!-- Employee Report Table -->
+        <div *ngIf="reportType === 'employee'">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead class="table-dark">
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Mobile</th>
+                  <th>Department</th>
+                  <th>Skills</th>
+                  <th>Date of Joining</th>
+                  <th>Assigned Project</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let employee of filteredEmployees">
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="avatar me-2">{{ employee.name.charAt(0).toUpperCase() }}</div>
+                      <strong>{{ employee.name }}</strong>
+                    </div>
+                  </td>
+                  <td>{{ employee.email }}</td>
+                  <td>{{ employee.mobile }}</td>
+                  <td>
+                    <span class="badge bg-secondary">{{ employee.department }}</span>
+                  </td>
+                  <td>
+                    <div class="skills-container">
+                      <span *ngFor="let skill of employee.skills?.split(',')" class="badge bg-light text-dark me-1">
+                        {{ skill.trim() }}
+                      </span>
+                    </div>
+                  </td>
+                  <td>{{ employee.doj | date:'MMM dd, yyyy' }}</td>
+                  <td>
+                    <span *ngIf="employee.project" class="badge bg-success">
+                      {{ employee.project.name }}
+                    </span>
+                    <span *ngIf="!employee.project" class="badge bg-warning">
+                      Not Assigned
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div *ngIf="filteredEmployees.length === 0" class="text-center py-4">
+            <i class="bi bi-inbox display-1 text-muted"></i>
+            <p class="text-muted mt-2">No employees found matching the selected filters.</p>
+          </div>
+        </div>
+
+        <!-- Project Report Table -->
+        <div *ngIf="reportType === 'project'">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead class="table-dark">
+                <tr>
+                  <th>Project Name</th>
+                  <th>Description</th>
+                  <th>Client</th>
+                  <th>Required Skills</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let project of filteredProjects">
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="project-icon me-2">
+                        <i class="bi bi-folder-fill text-primary"></i>
+                      </div>
+                      <strong>{{ project.name }}</strong>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="text-truncate d-inline-block" style="max-width: 200px;" 
+                          [title]="project.description">
+                      {{ project.description }}
+                    </span>
+                  </td>
+                  <td>
+                    <span class="badge bg-info">{{ project.client }}</span>
+                  </td>
+                  <td>
+                    <div class="skills-container">
+                      <span *ngFor="let skill of project.requiredSkill?.split(',')" class="badge bg-light text-dark me-1">
+                        {{ skill.trim() }}
+                      </span>
+                    </div>
+                  </td>
+                  <td>{{ project.startDate | date:'MMM dd, yyyy' }}</td>
+                  <td>{{ project.endDate | date:'MMM dd, yyyy' }}</td>
+                  <td>
+                    <span *ngIf="isProjectActive(project)" 
+                          class="badge bg-success">
+                      <i class="bi bi-play-circle me-1"></i>Active
+                    </span>
+                    <span *ngIf="isProjectCompleted(project)" 
+                          class="badge bg-secondary">
+                      <i class="bi bi-check-circle me-1"></i>Completed
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div *ngIf="filteredProjects.length === 0" class="text-center py-4">
+            <i class="bi bi-inbox display-1 text-muted"></i>
+            <p class="text-muted mt-2">No projects found matching the selected filters.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
