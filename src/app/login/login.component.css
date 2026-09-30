@@ -14,6 +14,13 @@
   padding: 32px;
   position: relative;
   overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.login-page.light-theme {
+  background:
+    linear-gradient(135deg, rgba(233, 240, 255, 0.82), rgba(191, 224, 255, 0.7)),
+    url('https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1400&q=80') center/cover no-repeat;
 }
 
 .login-page::before {
@@ -22,6 +29,28 @@
   inset: 0;
   background: radial-gradient(circle at top left, rgba(255,255,255,0.2), transparent 35%);
   pointer-events: none;
+}
+
+.theme-toggle {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  backdrop-filter: blur(12px);
+  cursor: pointer;
+  z-index: 2;
+}
+
+.login-page.light-theme .theme-toggle {
+  color: #18314f;
+  border-color: rgba(22, 48, 76, 0.12);
+  background: rgba(255, 255, 255, 0.55);
 }
 
 .login-shell {
@@ -115,6 +144,83 @@
 .stat-box span {
   color: rgba(236, 244, 255, 0.75);
   font-size: 0.85rem;
+}
+
+.mini-dashboard {
+  width: min(360px, 100%);
+  margin-top: 28px;
+  background: rgba(10, 18, 33, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 20px;
+  padding: 14px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+.mini-header {
+  display: flex;
+  gap: 8px;
+  padding-bottom: 10px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  border-radius: 50%;
+}
+
+.dot.green { background: #4ddf9d; }
+.dot.orange { background: #ffb454; }
+.dot.blue { background: #65c8ff; }
+
+.mini-body {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 16px;
+  align-items: end;
+}
+
+.bar-group {
+  height: 130px;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 18px 12px 8px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(128, 177, 255, 0.12), rgba(255,255,255,0.02));
+}
+
+.bar-group span {
+  display: block;
+  width: 100%;
+  border-radius: 999px 999px 0 0;
+  background: linear-gradient(180deg, #7de0ff, #3d8bfd);
+  box-shadow: 0 12px 22px rgba(61, 139, 253, 0.25);
+}
+
+.mini-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mini-metrics div {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.mini-metrics small {
+  display: block;
+  color: rgba(236, 244, 255, 0.7);
+  margin-bottom: 6px;
+}
+
+.mini-metrics strong {
+  color: white;
+  font-size: 1.1rem;
 }
 
 .login-card {

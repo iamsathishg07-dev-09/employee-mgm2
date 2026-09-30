@@ -14,12 +14,17 @@ import { MessageComponent } from '../message/message.component';
 })
 export class LoginComponent {
   loginData: User = { username: '', password: '' };
-  message: string | null = null; 
-  
+  message: string | null = null;
+  isLightTheme = false;
+
   private readonly USER_KEY = 'loggedInUsername'; //for storing username in session storage
 
 
 constructor(private userService: UserService, private router: Router) { }
+
+  toggleTheme(): void {
+    this.isLightTheme = !this.isLightTheme;
+  }
   
  loginUser(): void {
   this.userService.loginUserService(this.loginData).subscribe({

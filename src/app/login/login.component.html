@@ -1,4 +1,8 @@
-<div class="login-page">
+<div class="login-page" [class.light-theme]="isLightTheme">
+  <button type="button" class="theme-toggle" (click)="toggleTheme()" aria-label="Toggle theme">
+    {{ isLightTheme ? 'Dark mode' : 'Light mode' }}
+  </button>
+
   <div class="login-shell">
     <aside class="brand-panel">
       <div class="brand-badge">EmployeeFlow</div>
@@ -21,6 +25,33 @@
         <div class="stat-box">
           <strong>96%</strong>
           <span>Engagement</span>
+        </div>
+      </div>
+
+      <div class="mini-dashboard">
+        <div class="mini-header">
+          <span class="dot green"></span>
+          <span class="dot orange"></span>
+          <span class="dot blue"></span>
+        </div>
+        <div class="mini-body">
+          <div class="bar-group">
+            <span style="height: 40%;"></span>
+            <span style="height: 65%;"></span>
+            <span style="height: 82%;"></span>
+            <span style="height: 58%;"></span>
+            <span style="height: 90%;"></span>
+          </div>
+          <div class="mini-metrics">
+            <div>
+              <small>Active</small>
+              <strong>84%</strong>
+            </div>
+            <div>
+              <small>Tasks</small>
+              <strong>356</strong>
+            </div>
+          </div>
         </div>
       </div>
     </aside>

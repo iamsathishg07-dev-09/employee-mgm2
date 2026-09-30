@@ -1,72 +1,116 @@
-<div class="container">
-  <div class="container shadow position-absolute top-50 start-50 translate-middle w-50 p-4 rounded-4">
-    <h2 class="text-center mb-3">Registration</h2>
-    <form (ngSubmit)="createUser()" class="justify-content-center" #registerForm="ngForm">
-      <div class="form-group mb-2 fw-semibold">
-        <label for="username" class="mb-2">Username</label>
-        <input type="text" placeholder="username" class="form-control px-2 py-1"
-          [ngClass]="{'is-invalid': usernameInput.invalid && (usernameInput.dirty || usernameInput.touched), 'is-valid': usernameInput.valid && (usernameInput.dirty || usernameInput.touched)}"
-          id="username" name="username" [(ngModel)]="newUser.username" required minlength="3" maxlength="50"
-          #usernameInput="ngModel">
-        <div *ngIf="usernameInput.invalid && (usernameInput.dirty || usernameInput.touched)" class="invalid-feedback">
-          <div *ngIf="usernameInput.errors?.['required']">
-            Username is required.
-          </div>
-          <div *ngIf="usernameInput.errors?.['minlength']">
-            Username must be at least 3 characters long.
-          </div>
-          <div *ngIf="usernameInput.errors?.['maxlength']">
-            Username cannot exceed 50 characters.
-          </div>
+<div class="register-page">
+  <div class="register-shell">
+    <aside class="brand-panel">
+      <div class="brand-badge">EmployeeFlow</div>
+      <h1>Build a stronger, more connected team.</h1>
+      <p>
+        Create your secure workspace and start managing people, roles, performance, and projects with one streamlined system.
+      </p>
+
+      <div class="feature-list">
+        <span>Hiring</span>
+        <span>Roles</span>
+        <span>Team setup</span>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-box">
+          <strong>24/7</strong>
+          <span>Access</span>
+        </div>
+        <div class="stat-box">
+          <strong>100%</strong>
+          <span>Secure</span>
         </div>
       </div>
+    </aside>
 
-      <div class="form-group mb-2 fw-semibold">
-        <label for="role" class="mb-2">Role</label>
-        <select id="role" name="role" class="form-select" [ngClass]="{
-      'is-invalid': roleInput.invalid && (roleInput.dirty || roleInput.touched),
-      'is-valid': roleInput.valid && (roleInput.dirty || roleInput.touched)
-    }" required [(ngModel)]="newUser.role" #roleInput="ngModel">
-          <option value="" disabled selected>Select a Role</option>
-          <option value="employee">Employee</option>
-          <option value="manager">Manager</option>
-          <option value="Admin">Admin</option>
-        </select>
-        <div *ngIf="roleInput.invalid && (roleInput.dirty || roleInput.touched)" class="invalid-feedback">
-          <div *ngIf="roleInput.errors?.['required']">
-            Role is required.
+    <section class="register-card" aria-label="Registration form">
+      <div class="card-header">
+        <div class="avatar">EF</div>
+        <h2>Create account</h2>
+        <p>Set up your workspace in a few easy steps</p>
+      </div>
+
+      <form (ngSubmit)="createUser()" class="register-form" #registerForm="ngForm">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            placeholder="Enter your username"
+            class="form-control"
+            [ngClass]="{'is-invalid': usernameInput.invalid && (usernameInput.dirty || usernameInput.touched), 'is-valid': usernameInput.valid && (usernameInput.dirty || usernameInput.touched)}"
+            id="username"
+            name="username"
+            [(ngModel)]="newUser.username"
+            required
+            minlength="3"
+            maxlength="50"
+            #usernameInput="ngModel"
+          >
+          <div *ngIf="usernameInput.invalid && (usernameInput.dirty || usernameInput.touched)" class="invalid-feedback">
+            <div *ngIf="usernameInput.errors?.['required']">Username is required.</div>
+            <div *ngIf="usernameInput.errors?.['minlength']">Username must be at least 3 characters long.</div>
+            <div *ngIf="usernameInput.errors?.['maxlength']">Username cannot exceed 50 characters.</div>
           </div>
         </div>
-      </div>
 
-
-      <div class="form-group mb-4 fw-semibold">
-        <label for="password" class="mb-2">Password</label>
-        <input type="password" placeholder="*********" class="form-control px-2 py-1"
-          [ngClass]="{'is-invalid': passwordInput.invalid && (passwordInput.dirty || passwordInput.touched), 'is-valid': passwordInput.valid && (passwordInput.dirty || passwordInput.touched)}"
-          id="password" name="password" [(ngModel)]="newUser.password" required minlength="6" maxlength="24"
-          #passwordInput="ngModel">
-        <div *ngIf="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)" class="invalid-feedback">
-          <div *ngIf="passwordInput.errors?.['required']">
-            Password is required.
-          </div>
-          <div *ngIf="passwordInput.errors?.['minlength']">
-            Password must be at least 6 characters long.
-          </div>
-          <div *ngIf="passwordInput.errors?.['maxlength']">
-            Password cannot exceed 24 characters.
+        <div class="form-group">
+          <label for="role">Role</label>
+          <select
+            id="role"
+            name="role"
+            class="form-select form-control"
+            [ngClass]="{
+              'is-invalid': roleInput.invalid && (roleInput.dirty || roleInput.touched),
+              'is-valid': roleInput.valid && (roleInput.dirty || roleInput.touched)
+            }"
+            required
+            [(ngModel)]="newUser.role"
+            #roleInput="ngModel"
+          >
+            <option value="" disabled selected>Select a role</option>
+            <option value="employee">Employee</option>
+            <option value="manager">Manager</option>
+            <option value="Admin">Admin</option>
+          </select>
+          <div *ngIf="roleInput.invalid && (roleInput.dirty || roleInput.touched)" class="invalid-feedback">
+            <div *ngIf="roleInput.errors?.['required']">Role is required.</div>
           </div>
         </div>
-      </div>
 
-      <div class="form-group text-center mt-5">
-        <button type="submit" class="btn btn-success rounded-4" [disabled]="registerForm.invalid">Register</button>
-      </div>
-    </form>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            placeholder="Create a password"
+            class="form-control"
+            [ngClass]="{'is-invalid': passwordInput.invalid && (passwordInput.dirty || passwordInput.touched), 'is-valid': passwordInput.valid && (passwordInput.dirty || passwordInput.touched)}"
+            id="password"
+            name="password"
+            [(ngModel)]="newUser.password"
+            required
+            minlength="6"
+            maxlength="24"
+            #passwordInput="ngModel"
+          >
+          <div *ngIf="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)" class="invalid-feedback">
+            <div *ngIf="passwordInput.errors?.['required']">Password is required.</div>
+            <div *ngIf="passwordInput.errors?.['minlength']">Password must be at least 6 characters long.</div>
+            <div *ngIf="passwordInput.errors?.['maxlength']">Password cannot exceed 24 characters.</div>
+          </div>
+        </div>
 
-    <div class="mt-3 text-center">
-      Already an User? <a routerLink="/login">Login Here</a>
-    </div>
+        <button type="submit" class="register-button" [disabled]="registerForm.invalid">
+          Register
+        </button>
+      </form>
+
+      <div class="login-text">
+        Already have an account? <a routerLink="/login">Login here</a>
+      </div>
+    </section>
   </div>
+
   <app-message [message]="message" (closed)="message = null"></app-message>
 </div>
