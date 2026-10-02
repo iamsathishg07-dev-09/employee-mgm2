@@ -12,7 +12,8 @@ import { HeaderComponent } from '../shared/header/header.component';
   selector: 'app-employee-form',
   standalone: true,
   imports: [CommonModule, FormsModule,AccountListComponent,RouterLink,MessageComponent,HeaderComponent],
-  templateUrl: './employee-form.component.html'
+  templateUrl: './employee-form.component.html',
+  styleUrls: ['./employee-form.component.css']
 }) 
 export class EmployeeFormComponent implements OnInit {
   showModal = false;            //to determine to show modl or not
@@ -33,6 +34,8 @@ export class EmployeeFormComponent implements OnInit {
   private readonly USER_KEY = 'loggedInUsername';
   loggedInUsername:string | null=null;
   pageName:string='Employee'
+
+  //employeeForm: string = 'employee-form';
 
   //view of account details for who don't added accounts
   newAccountDetails = {
@@ -229,8 +232,8 @@ filterNumericInput(event: Event): void {
 onAccountOptionChange(): void {
     if (this.hasAccount) {
       this.newAccountDetails = {mobileNumber:'', accountNumber: '', bankName: '', ifscCode: '', branchAddress: '' };
-      if (!this.employee.id) { 
-        this.employee.account.mobileNumber= '';
+      if (!this.employee.id) {
+        this.employee.account.mobileNumber = '';
         this.selectedAccount = null;
       }
     } else {
@@ -238,35 +241,29 @@ onAccountOptionChange(): void {
       this.selectedAccount = null;
     }
   }
-  logOut()
-  {
+
+  logOut(): void {
     sessionStorage.removeItem(this.USER_KEY);
     console.log('Logging out (placeholder action)');
-    
     this.router.navigate(['/login']);
   }
-  goBack()
-  {
-    if(this.fromPage==='employee-list')
-    {
-      console.log("back to employee-list")
+
+  goBack(): void {
+    if (this.fromPage === 'employee-list') {
+      console.log('back to employee-list');
       this.router.navigate(['/employee-list']);
-
-    }
-    else if(this.fromPage==='project-list')
-    {
-            console.log("back to project-list")
-
-      this.router.navigate(['/project-list'],{queryParams:{
-        search:this.searchSkill,
-        projectid:this.projectId,
-      }
-    });
-
-      }
-    }
-    gotoEmpList()
-    {
-      this.router.navigate(['/employee-list']);
+    } else if (this.fromPage === 'project-list') {
+      console.log('back to project-list');
+      this.router.navigate(['/project-list'], {
+        queryParams: {
+          search: this.searchSkill,
+          projectid: this.projectId,
+        }
+      });
     }
   }
+
+  gotoEmpList(): void {
+    this.router.navigate(['/employee-list']);
+  }
+}
